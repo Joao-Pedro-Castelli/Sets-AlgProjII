@@ -76,3 +76,44 @@ void setApagar(SET **setptr){
 	free(*set);
 	*set = NULL;
 }
+
+void setImprimir(SET *set){
+	if(set == NULL){
+		printf("O set não existe!\n");
+		return;
+	}
+	if(set->tipo == 0){
+		avlImprimir(set->arvore);
+	}
+	else if(set->tipo == 1){
+		rbImprimir(set->arvore);
+	}
+	else{
+		printf("O tipo do set não existe!\n");
+	}
+	return;
+}
+
+SET *setUniao(SET *setA, SET *setB){
+	if(setA == NULL || setB == NULL){
+		return NULL;
+	}
+	SET *sintese = setCopiar(setA);
+	if(sintese->tipo == 0){
+		avlUnir(sintese->arvore, setB->arvore);
+	}
+	else if(sintese->tipo == 1){
+		rbUnir(sintese->arvore, setB->arvore);
+	}
+	return sintese;
+}
+
+SET *setInterseccao(SET *setA, SET *setB){
+	if(setA == NULL || setB == NULL){
+		return NULL;
+	}	
+	SET *sintese = set_criar(setA->tipo);
+	int *elementos = setElementos(sintese);
+	int n = sizeof(elementos) / sizeof(int);
+	for(int i = 0; i <
+}
