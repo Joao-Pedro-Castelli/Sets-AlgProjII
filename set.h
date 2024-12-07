@@ -16,5 +16,8 @@
 	void setImprimir(SET *set);
 	SET *setUniao(SET *setA, SET *setB);
 	SET *setInterseccao(SET *setA, SET *setB);
+	int *setElementos(SET *set); //esta funcao cria um array usando malloc. quem chamar a funcao tem a responsabilidade de
+				     //realizar o free() depois de usado o array.
+	int setTamanho(SET *set);
   
 #endif

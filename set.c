@@ -82,15 +82,22 @@ void setImprimir(SET *set){
 		printf("O set não existe!\n");
 		return;
 	}
-	if(set->tipo == 0){
-		avlImprimir(set->arvore);
-	}
-	else if(set->tipo == 1){
-		rbImprimir(set->arvore);
-	}
-	else{
+	int *elementos;
+	if((elementos = setElementos(set)) == NULL){
 		printf("O tipo do set não existe!\n");
+		return;
 	}
+	int n;
+	if((n = setTamanho(set)) == ERRO){
+		printf("Algo deu errado com o tamanho do set!\n");
+		return;
+	}
+	for(int i = 0; i < n; i++){
+		printf("%d ", elementos[i]);
+	}
+	free(elementos);
+	elementos = NULL;
+	putchar('\n');
 	return;
 }
 
@@ -132,11 +139,15 @@ SET *setInterseccao(SET *setA, SET *setB){
 			}
 		}
 	}
+	free(elementos);
+	elementos = NULL;
 	return sintese;
 }
 
 int *setElementos(SET *set){
 //todos os elementos do set em um array de inteiros.
+//as funcoes avl e rb Elementos retornam array gerados por malloc. Quem chamar a funcao setElementos tem a responsabilidade
+//de realizar free() apos usar o array.
 	if(set->tipo == 0){
 		return avlElementos(set->arvore);
 	}
