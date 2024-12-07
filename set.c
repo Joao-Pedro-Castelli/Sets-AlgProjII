@@ -95,8 +95,15 @@ void setImprimir(SET *set){
 }
 
 SET *setUniao(SET *setA, SET *setB){
-	if(setA == NULL || setB == NULL){
-		return NULL;
+//para a uniao, irei colocar o setA no sintese, o set que sera retornado,
+//e chamarei uma funcao especifica de cada arvore chamada unir.
+	if(setA == NULL){
+		if(setB == NULL){
+			return NULL;
+		}
+		else{
+			return setB;
+		}
 	}
 	SET *sintese = setCopiar(setA);
 	if(sintese->tipo == 0){
@@ -109,11 +116,42 @@ SET *setUniao(SET *setA, SET *setB){
 }
 
 SET *setInterseccao(SET *setA, SET *setB){
+//para a interseccao, irei pegar todos os elementos do setA
+//e irei colocando no sintese, set que sera retornado, todos os elementos que pertencerem ao setB tambem.
 	if(setA == NULL || setB == NULL){
 		return NULL;
 	}	
 	SET *sintese = set_criar(setA->tipo);
-	int *elementos = setElementos(sintese);
-	int n = sizeof(elementos) / sizeof(int);
-	for(int i = 0; i <
+	int *elementos = setElementos(setA);
+	int n = setTamanho(setA);
+	for(int i = 0; i < n; i++){
+		if(setPertence(setB, elementosA[i])){
+			if(!setInserir(sintese, elementosA[i])){
+				printf("erro na insercao durante interseccao!\n");
+				return NULL;
+			}
+		}
+	}
+	return sintese;
+}
+
+int *setElementos(SET *set){
+//todos os elementos do set em um array de inteiros.
+	if(set->tipo == 0){
+		return avlElementos(set->arvore);
+	}
+	else if(set->tipo == 1){
+		return rbElementos(set->arvore);
+	}
+	return NULL;
+}
+
+int setTamanho(SET *set){
+//numero de elementos no set.
+	if(set->tipo == 0){
+		return avlTamanho(set->arvore);
+	else if(set->tipo == 1){
+		return rbTamanho(set->arvore);
+	}
+	return ERRO;
 }
