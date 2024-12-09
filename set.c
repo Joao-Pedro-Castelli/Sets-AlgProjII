@@ -8,6 +8,9 @@ struct set{
 
 SET *setCriar(int tipo){
 	SET *set = (SET *) malloc(sizeof(SET));
+	if(set == NULL){
+		return NULL;
+	}
 	if(tipo == 0){
 		set->arvore = avlCriar(); //primeira ED, arvore AVL
 	}
