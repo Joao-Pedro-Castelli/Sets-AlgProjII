@@ -12,7 +12,7 @@ typedef struct avl AVL;
 	bool avlInserir(AVL *arvore, int elemento);
 	bool avlRemover(AVL *arvore, int elemento);
 	void avlApagar(AVL *arvore);
-	void avlUnir(AVL *sintese, AVL *arvore);
+	void avlArrOrdenado(AVL *sintese, int *ordenado, int n);
 	int *avlElementos(AVL *arvore);
 	int avlTamanho(AVL *arvore);
 

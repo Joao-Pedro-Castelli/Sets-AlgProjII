@@ -11,6 +11,7 @@ SET *setCriar(int tipo){
 	if(set == NULL){
 		return NULL;
 	}
+	set->arvore = NULL;
 	if(tipo == 0){
 		set->arvore = avlCriar(); //primeira ED, arvore AVL
 	}
@@ -104,24 +105,62 @@ void setImprimir(SET *set){
 	return;
 }
 
+int arrOrdenadoUnir(int *uniao, int *arrA, int numA, int *arrB, int numB){
+	int ptrA = 0; int ptrB = 0; int i = 0;
+	while(ptrA < numA && ptrB < numB){
+		if(arrA[ptrA] == arrB[ptrB]){ //elementos repetidos sao colocados apenas uma vez.
+			uniao[i] = arrA[ptrA];
+			ptrA++;
+			ptrB++;
+		}
+		if(arrA[ptrA] < arrB[ptrB]){
+			uniao[i] = arrA[ptrA];
+			ptrA++;
+		}
+		else{
+			uniao[i] = arrB[ptrB];
+			ptrB++;
+		}
+		i++;
+	}
+	while(ptrA < numA){
+		uniao[i] = arrA[ptrA];
+		ptrA++;
+		i++;
+	}
+	while(ptrB < numB){
+		uniao[i] = arrB[ptrB];
+		ptrB++;
+		i++;
+	}
+	return i;
+}
+
 SET *setUniao(SET *setA, SET *setB){
 //para a uniao, irei colocar o setA no sintese, o set que sera retornado,
 //e chamarei uma funcao especifica de cada arvore chamada unir.
-	if(setA == NULL){
-		if(setB == NULL){
+	if(setA == NULL || setB == NULL){
 			return NULL;
-		}
-		else{
-			return setB;
-		}
 	}
-	SET *sintese = setCopiar(setA);
+
+	int *elementosA = setElementos(setA);
+	int numA = setTamanho(setA);
+	int *elementosB = setElementos(setB);
+	int numB = setTamanho(setB);
+	SET *sintese = setCriar(setA->tipo);
+	int elementosS[numA + numB];
+	int numS = arrOrdenadoUnir(elementosS, elementosA, numA, elementosB, numB);
 	if(sintese->tipo == 0){
-		avlUnir(sintese->arvore, setB->arvore);
+		avlArrOrdenado(sintese, elementosS, numS);
 	}
 	else if(sintese->tipo == 1){
-		rbUnir(sintese->arvore, setB->arvore);
+		rbArrOrdenado(sintese, elementosS, numS);
 	}
+	else{
+		printf("erro em setUniao, tipo desconhecido.\n");
+		return NULL;
+	}
+
 	return sintese;
 }
 
