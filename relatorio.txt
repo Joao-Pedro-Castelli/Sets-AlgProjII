@@ -1,3 +1,10 @@
+Projeto de Alg do professor Rudinei
+Grupo:
+João Pedro Monteiro Machado Junqueira Castelli  - NUSP: 15463450
+Matheus Muzza Pires Ferreira - NUSP: 15479468
+Github do projeto: https://github.com/Joao-Pedro-Castelli/Sets-AlgProjII
+
+
 Relatorio:
 As estruturas de dados que escolhemos usar foram as árvores AVL e Rubro-Negra. O TAD Set precisa fazer inserções, remoções
 e buscas rapidamente, e a árvore binária de busca balanceada é a estrutura de dado que melhor realiza as três operações no geral, enquanto mantém um consumo de memória baixo e dinâmico para o tamanho do conjunto. Tanto a AVL quanto a Rubro-Negra conseguem fazer inserção, remoção e busca em tempo O(log(n)), como visto em sala de aula, porém a Rubro-Negra é um pouco menos eficiente.
@@ -61,4 +68,5 @@ Sobre as operações do TAD Set:
 		Retorna-se Síntese. A complexidade consiste no loop de verificar o pertencimento do elemento, equivalente a busca na
 		ABB = O(log(n)), para todos os elementos do outro conjunto = m. Portanto, O(n(log(m)). Como o tamanho de n afeta mais
 		a performance, pois m está dentro de um log, é escolhido o conjunto menor para fazer o papel de n.
+
 
