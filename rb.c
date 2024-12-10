@@ -18,8 +18,8 @@ struct no{
 };
 
 int auxPertence(NO* raiz, int elemento);
-bool auxInserir(NO* raiz, int elemento);
-NO* inverteCor(NO* raiz);
+NO* auxInserir(NO* raiz, int elemento);
+void inverteCor(NO* raiz);
 NO* rotDir(NO* raiz);
 NO* rotEsq(NO* raiz);
 void auxApagar(NO** raiz);
@@ -44,7 +44,7 @@ NO* noCriar(int elemento){
 
 
 
-NO* inverteCor(NO* raiz){
+void inverteCor(NO* raiz){
 
     raiz->cor = !raiz->cor;
     if(raiz->esq){
@@ -53,10 +53,6 @@ NO* inverteCor(NO* raiz){
     if(raiz->dir){
         raiz->dir->cor = !raiz->dir->cor;
     }
-    
-    
-
-    return raiz;
 }
 
 NO* rotDir(NO* raiz){
@@ -64,11 +60,9 @@ NO* rotDir(NO* raiz){
 
     raiz->esq = aux->dir;
     aux->dir = raiz;
-    raiz = aux;
+    aux->cor = raiz->cor;
 
-    raiz->cor = raiz->dir->cor;
-
-    raiz->dir->cor = 1;
+    raiz->cor =1;
 
     return raiz;
 }
@@ -124,7 +118,7 @@ int auxPertence(NO* raiz, int elemento){
 }
 
 bool rbInserir(RB* rb, int elemento){
-    if(auxInserir(rb->raiz,elemento)){
+    if(auxInserir(rb->raiz,elemento)!=NULL){
         rb->tamanho++;
         return true;
     }
@@ -133,48 +127,33 @@ bool rbInserir(RB* rb, int elemento){
     }
 }
 
-bool auxInserir(NO* raiz, int elemento){
+NO* auxInserir(NO* raiz, int elemento){
 
    if(raiz == NULL){
-        raiz = noCriar(elemento);
-        if(raiz!= NULL)
-            return true;
-        else{
-            return false;
-        }
+        return noCriar(elemento);
    }
 
     if(raiz->dado > elemento){
-        if(auxInserir(raiz->dir, elemento)){
-            if(raiz->esq->cor != 1 && raiz->dir->cor == 1){
-                raiz = rotEsq(raiz); 
-            }
-            if(raiz->esq->cor == 1 && raiz->esq->esq->cor == 1){
-                raiz = rotDir(raiz);
-            }
-            if(raiz->esq->cor == 1 && raiz->dir->cor == 1){
-                raiz = inverteCor(raiz);
-            }
-            return true;
+        raiz->esq = auxInserir(raiz->esq,elemento);
         }
-        return false;
+    if(raiz->dado < elemento){
+        raiz->dir = auxInserir(raiz->dir,elemento);
     }
 
-    if(raiz->dado < elemento){
-        if(auxInserir(raiz->esq, elemento)){
-            if(raiz->esq->cor != 1 && raiz->dir->cor == 1){
-                raiz = rotEsq(raiz); 
-            }
-            if(raiz->esq->cor == 1 && raiz->esq->esq->cor == 1){
-                raiz = rotDir(raiz);
-            }
-            if(raiz->esq->cor == 1 && raiz->dir->cor == 1){
-                raiz = inverteCor(raiz);
-            }
-            return true;
-        }
-        return false;
+    if(raiz->dir->cor ==1 && raiz->esq->cor != 1){
+        raiz = rotEsq(raiz);
     }
+
+    if(raiz->esq->cor ==1 && raiz->esq->esq->cor == 1){
+        raiz = rotDir(raiz);
+    }
+
+    if(raiz->esq->cor ==1 && raiz->dir->cor == 1){
+        inverteCor(raiz);
+    }
+    return raiz;
+
+
 }
 
 bool rbRemover(RB** rb, int elemento){
@@ -251,6 +230,10 @@ void auxApagar(NO**raiz){
 int *rbElementos(RB* rb){
    int* vetor = malloc(sizeof(int)*rb->tamanho);
 
+    if( vetor == NULL){
+        printf("oi");
+        return vetor;
+    }
     auxElementos(rb->raiz,vetor,0);
     return vetor;
 }
@@ -261,8 +244,9 @@ void auxElementos(NO* raiz, int* vetor, int pos){
     }
 
     vetor[pos] = raiz->dado;
-    auxElementos(raiz->esq,vetor, pos + 1);
-    auxElementos(raiz->dir, vetor, pos +2);
+
+    auxElementos(raiz->esq,vetor, 2*pos+1);    
+    auxElementos(raiz->dir, vetor, 2*pos +2);
 
 }
 
@@ -293,8 +277,15 @@ void auxArrOrdenado(RB* sintese, int* elementos, int ini, int fim){
 
     int meio = (ini + fim)/2;
     rbInserir(sintese, elementos[meio]);
-    auxArrOrdenado(sintese, elementos,0, meio - 1);
-    auxArrOrdenado(sintese, elementos, meio + 1, fim);
+
+    if(meio-1>=0){
+        auxArrOrdenado(sintese, elementos,0, meio - 1);
+    }
+    
+    if(meio+1<=fim){
+        auxArrOrdenado(sintese, elementos, meio + 1, fim);
+    }
+    
 }
 
 void auxUnir(NO* adicionar, NO* sintese){
@@ -310,5 +301,22 @@ void auxUnir(NO* adicionar, NO* sintese){
 }
 
 int main(){
+    RB* rb = rbCriar();
+
+    if(rb== NULL){
+        printf("MERDA");
+        exit(1);
+    }
+    rbInserir(rb, 1);
+    rbInserir(rb,2);
+    rbInserir(rb,3);
+    
+    int *arr = rbElementos(rb);
+
+    for(int i = 0;i<rb->tamanho;i++){
+        printf("%d ", arr[i]);
+    }
     return 0;
+
+
 }
