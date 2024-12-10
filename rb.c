@@ -25,7 +25,7 @@ void inverteCor(NO* raiz);
 NO* rotDir(NO* raiz);
 NO* rotEsq(NO* raiz);
 void auxApagar(NO** raiz);
-void auxElementos(NO* raiz, int* vetor, int pos);
+int auxElementos(NO* raiz, int* vetor, int pos);
 NO* minDir(NO* raiz);
 NO* noCriar(int elemento);
 void auxUnir(NO* adicionar, NO* sintese);
@@ -108,12 +108,11 @@ int auxPertence(NO* raiz, int elemento){
         return 1;
     }
 
-    if(auxPertence(raiz->dir,elemento)){
-        return 1;
-    }
-    else{
+    if(raiz->dado > elemento){
         return auxPertence(raiz->esq,elemento);
     }
+    
+    return auxPertence(raiz->dir,elemento);
 }
 
 bool rbInserir(RB* rb, int elemento){
@@ -304,24 +303,28 @@ void auxApagar(NO**raiz){
 int *rbElementos(RB* rb){
    int* vetor = malloc(sizeof(int)*rb->tamanho);
 
+    for(int i=0;i<rb->tamanho;i++){
+        vetor[i] = -1;
+    }
     if( vetor == NULL){
-        printf("oi");
         return vetor;
     }
     auxElementos(rb->raiz,vetor,0);
     return vetor;
 }
 
-void auxElementos(NO* raiz, int* vetor, int pos){
+int auxElementos(NO* raiz, int* vetor, int pos){
     if(raiz == NULL){
-        return;
+        return pos;
     }
 
+    
+    
+    pos = auxElementos(raiz->esq,vetor, pos);
     vetor[pos] = raiz->dado;
-
-    auxElementos(raiz->esq,vetor, 2*pos+1);    
-    auxElementos(raiz->dir, vetor, 2*pos +2);
-
+    pos++;
+    pos = auxElementos(raiz->dir, vetor, pos);
+    return pos;
 }
 
 int rbTamanho(RB *rb){
@@ -398,14 +401,17 @@ int main(){
     rbInserir(rb,2);
     rbInserir(rb,3);
     rbInserir(rb,4);
+    rbInserir(rb,12);
+    rbInserir(rb,5);
+    rbInserir(rb,17);
+    rbInserir(rb,13);
+    rbInserir(rb,6);
 
-
-    printar(rb->raiz);
-
-    rbRemover(rb,3);
-    printf("\n");
-    printar(rb->raiz);
     
+    printar(rb->raiz);
+
+    
+   
     
     return 0;
 }
