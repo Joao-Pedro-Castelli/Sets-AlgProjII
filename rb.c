@@ -276,10 +276,12 @@ RB* rbUnir(RB *sintese, RB *rb){
 
 RB* rbArrOrdenado( int* elementos, int tamanho){
     RB* sintese = rbCriar();
-    for(int i=tamanho/2;i<tamanho;i++){
-        rbInserir(sintese, elementos[i]);
-        rbInserir(sintese, elementos[i-tamanho/2]);
+    rbInserir(sintese, elementos[tamanho/2]);
+    for(int i=1;i<tamanho/2;i++){
+        rbInserir(sintese, elementos[tamanho/2-i]);
+        rbInserir(sintese, elementos[tamanho/2+i]);
     }
+    rbInserir(sintese, elementos[0]);
     return sintese;
 }
 
