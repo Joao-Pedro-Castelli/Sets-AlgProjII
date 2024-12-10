@@ -25,6 +25,23 @@ NO* rotEsq(NO* raiz);
 void auxApagar(NO** raiz);
 void auxElementos(NO* raiz, int* vetor, int pos);
 void minDir(NO* atual, NO* anterior, NO*raiz);
+NO* noCriar(int elemento);
+void auxUnir(NO* adicionar, NO* sintese);
+NO* auxRemover(NO** raiz, int elemento);
+
+NO* noCriar(int elemento){
+    NO* n = malloc(sizeof(NO));
+    if(n!=NULL){
+        n->cor = 1;
+        n->dado = elemento;
+        n->dir =  NULL;
+        n->esq = NULL;
+    }
+
+    return n;
+}
+
+
 
 NO* inverteCor(NO* raiz){
 
@@ -160,7 +177,10 @@ bool auxInserir(NO* raiz, int elemento){
 }
 
 bool rbRemover(RB** rb, int elemento){
-    return (auxRemover(rb->raiz, elemento) != NULL);
+    if(auxRemover(&(*rb)->raiz, elemento) != NULL){
+        return true;
+    }
+    return false;
 }
 
 NO* auxRemover(NO** raiz, int elemento){
@@ -185,7 +205,7 @@ NO* auxRemover(NO** raiz, int elemento){
         }
     }
     else{
-        minDir((*raiz->dir),(*raiz),(*raiz));
+        minDir(((*raiz)->dir),(*raiz),(*raiz));
     }
     
 }
@@ -195,11 +215,10 @@ void minDir(NO* atual, NO* anterior, NO* raiz){
     
     if(raiz->esq == NULL){
         if(anterior == raiz){
-            
+            int aux = atual->dado;
+            atual->dado = raiz->dado;
+            raiz->dado = aux;
         }
-
-        anterior->
-        
     }
 
 
@@ -229,9 +248,9 @@ void auxApagar(NO**raiz){
 }
 
 int *rbElementos(RB* rb){
-   int* vetor[rb->tamanho];
+   int* vetor = malloc(sizeof(int)*rb->tamanho);
 
-    auxElementos(NO* raiz,vetor,0);
+    auxElementos(rb->raiz,vetor,0);
     return vetor;
 }
 
@@ -255,6 +274,15 @@ RB* rbUnir(RB *sintese, RB *rb){
     return sintese;
 }
 
+RB* rbArrOrdenado( int* elementos, int tamanho){
+    RB* sintese = rbCriar();
+    for(int i=tamanho/2;i<tamanho;i++){
+        rbInserir(sintese, elementos[i]);
+        rbInserir(sintese, elementos[i-tamanho/2]);
+    }
+    return sintese;
+}
+
 void auxUnir(NO* adicionar, NO* sintese){
     if(adicionar == NULL){
         return;
@@ -265,4 +293,8 @@ void auxUnir(NO* adicionar, NO* sintese){
 
     auxInserir(sintese, adicionar->dado);
     return;
+}
+
+int main(){
+    return 0;
 }
