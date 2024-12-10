@@ -118,8 +118,9 @@ int auxPertence(NO* raiz, int elemento){
 }
 
 bool rbInserir(RB* rb, int elemento){
-    if(auxInserir(rb->raiz,elemento)!=NULL){
+    if((rb->raiz = auxInserir(rb->raiz,elemento))!=NULL){
         rb->tamanho++;
+        rb->raiz->cor = 0;
         return true;
     }
     else{
@@ -128,7 +129,6 @@ bool rbInserir(RB* rb, int elemento){
 }
 
 NO* auxInserir(NO* raiz, int elemento){
-
    if(raiz == NULL){
         return noCriar(elemento);
    }
@@ -300,6 +300,17 @@ void auxUnir(NO* adicionar, NO* sintese){
     return;
 }
 
+void printar(NO* rb){
+
+    printf("oi");
+    if(rb == NULL){
+        return;
+    }
+    printf("%d ",rb->dado);
+    printar(rb->esq);
+    printar(rb->dir);
+}
+
 int main(){
     RB* rb = rbCriar();
 
@@ -311,11 +322,7 @@ int main(){
     rbInserir(rb,2);
     rbInserir(rb,3);
     
-    int *arr = rbElementos(rb);
-
-    for(int i = 0;i<rb->tamanho;i++){
-        printf("%d ", arr[i]);
-    }
+    
     return 0;
 
 
