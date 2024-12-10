@@ -10,7 +10,7 @@ typedef struct rb RB;
 	RB *rbCriar(void);
 	bool rbPertence(RB *rb, int elemento);
 	bool rbInserir(RB *rb, int elemento);
-	bool rbRemover(RB **rb, int elemento);
+	bool rbRemover(RB *rb, int elemento);
 	void rbApagar(RB **rb);
     RB* rbUnir(RB *sintese, RB *rb);
 	int *rbElementos(RB *rb);

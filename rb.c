@@ -16,7 +16,9 @@ struct no{
     NO* raiz;
     int tamanho;
 };
-
+NO* propagaDir(NO* raiz);
+NO* removeMin(NO* raiz);
+NO* propagaEsq(NO* raiz);
 int auxPertence(NO* raiz, int elemento);
 NO* auxInserir(NO* raiz, int elemento);
 void inverteCor(NO* raiz);
@@ -24,10 +26,10 @@ NO* rotDir(NO* raiz);
 NO* rotEsq(NO* raiz);
 void auxApagar(NO** raiz);
 void auxElementos(NO* raiz, int* vetor, int pos);
-void minDir(NO* atual, NO* anterior, NO*raiz);
+NO* minDir(NO* raiz);
 NO* noCriar(int elemento);
 void auxUnir(NO* adicionar, NO* sintese);
-NO* auxRemover(NO** raiz, int elemento);
+NO* auxRemover(NO* raiz, int elemento);
 void auxArrOrdenado(RB* sintese, int* elementos, int ini, int fim);
 
 NO* noCriar(int elemento){
@@ -38,11 +40,8 @@ NO* noCriar(int elemento){
         n->dir =  NULL;
         n->esq = NULL;
     }
-
     return n;
 }
-
-
 
 void inverteCor(NO* raiz){
 
@@ -118,6 +117,9 @@ int auxPertence(NO* raiz, int elemento){
 }
 
 bool rbInserir(RB* rb, int elemento){
+    if(rbPertence(rb,elemento)){
+        return false;
+    }
     if((rb->raiz = auxInserir(rb->raiz,elemento))!=NULL){
         rb->tamanho++;
         rb->raiz->cor = 0;
@@ -128,11 +130,18 @@ bool rbInserir(RB* rb, int elemento){
     }
 }
 
+int Vermelho(NO* raiz){
+    if(raiz == NULL){
+        return 0;
+    }
+
+    return (raiz->cor == 1);
+}
 NO* auxInserir(NO* raiz, int elemento){
    if(raiz == NULL){
         return noCriar(elemento);
    }
-
+    
     if(raiz->dado > elemento){
         raiz->esq = auxInserir(raiz->esq,elemento);
         }
@@ -140,15 +149,15 @@ NO* auxInserir(NO* raiz, int elemento){
         raiz->dir = auxInserir(raiz->dir,elemento);
     }
 
-    if(raiz->dir->cor ==1 && raiz->esq->cor != 1){
+    if(Vermelho(raiz->dir) ==1 && !Vermelho(raiz->esq) ){
         raiz = rotEsq(raiz);
     }
 
-    if(raiz->esq->cor ==1 && raiz->esq->esq->cor == 1){
+    if(Vermelho(raiz->esq) && Vermelho(raiz->esq->esq)){
         raiz = rotDir(raiz);
     }
 
-    if(raiz->esq->cor ==1 && raiz->dir->cor == 1){
+    if(Vermelho(raiz->esq) && Vermelho( raiz->dir)){
         inverteCor(raiz);
     }
     return raiz;
@@ -156,53 +165,118 @@ NO* auxInserir(NO* raiz, int elemento){
 
 }
 
-bool rbRemover(RB** rb, int elemento){
-    if(auxRemover(&(*rb)->raiz, elemento) != NULL){
+bool rbRemover(RB* rb, int elemento){
+    if(!rbPertence(rb, elemento)){
+        return false;
+    }
+    if((rb->raiz = auxRemover(rb->raiz, elemento) )!= NULL){
         return true;
     }
     return false;
 }
 
-NO* auxRemover(NO** raiz, int elemento){
+NO* auxRemover(NO* raiz, int elemento){
 
-    if(*raiz == NULL){
-        return *raiz;
+    if(raiz == NULL){
+        return raiz;
     }
 
-    if((*raiz)->esq == NULL || (*raiz)->dir == NULL){
-         NO* p;
-         p = *raiz;
-        if((*raiz)->esq == NULL){
-            *raiz = (*raiz)->dir;
+    if(raiz->dado == elemento){
+        if(raiz->esq == NULL || raiz->dir == NULL){
+            NO* p = raiz;
+            if(raiz->esq == NULL){
+                raiz = raiz->dir;
+            }
+            else{
+                raiz = raiz->esq;
+            }
             free(p);
             p = NULL;
-            return *raiz;   
         }
         else{
-            (*raiz) = (*raiz)->esq;
-            free(p);
-            p = NULL;
+            raiz = propagaDir(raiz);
+            NO* aux = minDir(raiz->dir);
+            raiz->dado = aux->dado;
+            raiz->dir = removeMin(raiz->dir);
         }
     }
     else{
-        minDir(((*raiz)->dir),(*raiz),(*raiz));
-    }
-    
-}
+        if(elemento<raiz->dado){
+            raiz = propagaEsq(raiz);
+            raiz->esq = auxRemover(raiz->esq,elemento);
 
-void minDir(NO* atual, NO* anterior, NO* raiz){
-
-    
-    if(raiz->esq == NULL){
-        if(anterior == raiz){
-            int aux = atual->dado;
-            atual->dado = raiz->dado;
-            raiz->dado = aux;
+        }
+        else{
+            raiz = propagaDir(raiz);
+            raiz->dir = auxRemover(raiz->dir,elemento);
         }
     }
 
+    if(raiz!= NULL){
+        if(Vermelho(raiz->dir) ==1 && !Vermelho(raiz->esq) ){
+        raiz = rotEsq(raiz);
+        }
 
-    minDir(raiz->esq,atual, raiz);
+        if(Vermelho(raiz->esq) && Vermelho(raiz->esq->esq)){
+        raiz = rotDir(raiz);
+        }
+
+        if(Vermelho(raiz->esq) && Vermelho( raiz->dir)){
+        inverteCor(raiz);
+        }
+        
+
+    }
+    return raiz;
+    
+}
+
+NO* removeMin(NO* raiz){
+    if(raiz->esq ==  NULL){
+        NO* p = raiz;
+        raiz = raiz->dir;
+
+        free(p);
+        p= NULL;
+
+        return raiz;
+    }
+    raiz = propagaEsq(raiz);
+    raiz->esq = removeMin(raiz->esq);
+    return raiz;
+}
+
+NO* propagaEsq(NO* raiz){
+    if(!Vermelho(raiz->esq)&& !Vermelho(raiz->esq->esq)){
+        inverteCor(raiz);
+        if(Vermelho(raiz->dir->esq)){
+            raiz->dir = rotDir(raiz->dir);
+            raiz = rotEsq(raiz);
+            inverteCor(raiz);
+        }
+    }
+    return raiz;
+}
+
+NO* propagaDir(NO* raiz){
+    if(Vermelho(raiz->esq)){
+        raiz = rotDir(raiz);
+    }
+    if(Vermelho(raiz->dir)&& !Vermelho(raiz->dir->esq)){
+        inverteCor(raiz);
+        if(Vermelho(raiz->esq->esq)){
+            raiz = rotDir(raiz);
+            inverteCor(raiz);
+        }
+    }
+    return raiz;
+}
+
+NO* minDir(NO* raiz){
+    if(raiz->esq == NULL){
+        return raiz;
+    }
+    return minDir(raiz->esq);
 }
 
 void rbApagar(RB **rb){
@@ -302,7 +376,9 @@ void auxUnir(NO* adicionar, NO* sintese){
 
 void printar(NO* rb){
 
-    printf("oi");
+    if(rb == NULL){
+        return;
+    }
     if(rb == NULL){
         return;
     }
@@ -321,9 +397,15 @@ int main(){
     rbInserir(rb, 1);
     rbInserir(rb,2);
     rbInserir(rb,3);
+    rbInserir(rb,4);
+
+
+    printar(rb->raiz);
+
+    rbRemover(rb,3);
+    printf("\n");
+    printar(rb->raiz);
     
     
     return 0;
-
-
 }
