@@ -1,0 +1,64 @@
+Relatorio:
+As estruturas de dados que escolhemos usar foram as árvores AVL e Rubro-Negra. O TAD Set precisa fazer inserções, remoções
+e buscas rapidamente, e a árvore binária de busca balanceada é a estrutura de dado que melhor realiza as três operações no geral, enquanto mantém um consumo de memória baixo e dinâmico para o tamanho do conjunto. Tanto a AVL quanto a Rubro-Negra conseguem fazer inserção, remoção e busca em tempo O(log(n)), como visto em sala de aula, porém a Rubro-Negra é um pouco menos eficiente.
+Sobre as operações do TAD Set:
+	- Criar
+		Apenas usa a função malloc para criar um ponteiro para a struct set e inicializa as variáveis, que na nossa
+		implementação são: void *arvore e int tipo. O ponteiro para a estrutura de dado que usaremos tem que ser void para
+		apontar tanto para a AVL quanto para a RB, de acordo com a escolha do usuário. A árvore é criada chamando avlCriar() ou
+		rbCriar(), que também apenas usam o malloc e realizam uma simples inicialização. A complexidade é O(1), pois não há
+		repetição nem recursão;
+
+	- Apagar
+		Esta função irá chamar avlApagar() ou rbApagar(). Estas duas funções seráo recursivas, pois precisam passar por todos os
+		elementos na árvore (set). Porém, não há repetição dentro destas funções, apenas um free. Portanto, a complexidade é
+		O(n), sendo n o número de elementos no conjunto.
+	
+	- Inserir
+		Esta função chamará avlInserir() ou rbInserir(), ambas funções recursivas. Dentro delas, há uma lógica para procurar o
+		lugar na ABB em que o elemento deve ser inserido, um nó será criado para ele e colocado na posição devida. Caso o
+		elemento já esteja na árvore (conjunto), ele não será adicionado novamente. O primeiro passo, buscar a posição, é
+		O(log(n)), enquanto criar o nó é O(1). Portanto, a complexidade é O(log(n)), lembrando que há uma diferença entre a
+		AVL e a RB, pois elas rebalanceam de formas diferentes, porém sem aumentar a complexidade.
+
+	- Remover
+		Novamente, esta função é idêntica a uma remoção em ABB balanceada, ou seja, O(log(n)).
+
+	- Imprimir
+		Esta função é diferente das últimas, no sentido que ela não chama uma função idêntica para as árvores. O que ela faz é
+		chamar avlElementos() ou rbElementos(), que retorna um array de int com todos os elementos presentes na árvore em-ordem.
+		Após isso, ela chama avl/rbTamanho(), retorna um int com o número de elementos, e, assim, faz um loop for printando o
+		array. O loop é O(n), assim como avl/rbElementos, portanto a complexidade é O(n). A função que cria o array dos
+		elementos é O(n) porque ela passa por todos os nós apenas uma vez.
+
+	- Pertence
+		Esta função é idêntica à uma busca em ABB, portanto ela tem a complexidade O(log(n)), sendo log(n) a profundidade do nó
+		que é buscado. Lembrando que a altura máxima da AVL e da LLRB Tree são diferentes, assim a AVL é ligeiramente melhor.
+
+	- União
+		Uma função um pouco mais complexa, e a única com complexidades diferentes entre a AVL e a RB. Nela, assim como na função
+		Imprimir, são gerados dois arrays dos elementos nos conjuntos A e B. Antes disso, se um dos dois sets == NULL, será
+		retornado nulo.
+		Depois, é gerado um terceiro array, ElementosS, que contém todos os elementos dos dois array apenas uma vez, ou seja,
+		todos os elementos que precisam estar no conjunto união. Esse terceiro array está ordenado, pois, como dito, as funções
+		avl/rbElementos() retornam os elementos da árvore em-ordem, portanto, o array ja estará ordenado. Juntar dois arrays
+		ordenado resulta em um array ordenado, e é feito em O(n), assim como no MergeSort.
+		Depois de tudo isso, nós precisamos criar o conjunto SET Sintese, o set criado pela união entre os sets A e B, a partir
+		de um array ordenado. Criar uma árvore a partir de um array ordenado pode ser feito em tempo O(n + m) usando um
+		algoritmo especial, sendo n = número de elementos no conjunto A e m = elementos no conjunto B. Este algoritmo consiste
+		de recursivamente criar nós a partir do meio do array e indo para os meios das divisões dos array, assim como na busca
+		binária (veja Merge two balanced trees no Google, bem interessante). O problema é que isto é fácil de se fazer na AVL,
+		mas muito difícil no RB sem piorar a complexidade ou não deixar as cores corretas. Portanto, na implementação da RB,
+		apenas cria-se uma árvore e insere-se os elementos do array nela normalmente.
+		Conclusão: AVL = O(m + n), pois criar o array de elementos de cada um dos conjuntos é, respectivamente, O(n) e O(m).
+		Criar o array que une os dois é O(n + m - os elementos em comum entre os dois, que no pior caso é nada) = O(n + m). O
+		algoritmo que cria uma árvore a partir de um array ordenado é O(n + m), assim O(n)+O(m) + O(n + m) + O(n+m) = O(n+m).
+		RB = O((m + n)log(m + n)). As
+
+	- Intersecção
+		Se um dos dois sets for nulo, será retornado nulo. Após essa verificação, apenas cria-se um array com os elementos do
+		conjunto A, verifica-se de um em um se eles estão no conjunto B e são colocados no conjunto Sintese os que estão.
+		Retorna-se Síntese. A complexidade consiste no loop de verificar o pertencimento do elemento, equivalente a busca na
+		ABB = O(log(n)), para todos os elementos do outro conjunto = m. Portanto, O(n(log(m)). Como o tamanho de n afeta mais
+		a performance, pois m está dentro de um log, é escolhido o conjunto menor para fazer o papel de n.
+

@@ -144,6 +144,7 @@ SET *setUniao(SET *setA, SET *setB){
 			return NULL;
 	}
 
+	
 	int *elementosA = setElementos(setA);
 	int numA = setTamanho(setA);
 	int *elementosB = setElementos(setB);
@@ -170,12 +171,24 @@ SET *setInterseccao(SET *setA, SET *setB){
 //e irei colocando no sintese, set que sera retornado, todos os elementos que pertencerem ao setB tambem.
 	if(setA == NULL || setB == NULL){
 		return NULL;
-	}	
+	}
+	int *elementos;
+	int n;
+	SET *aux;
+	if(setTamanho(setA) < setTamanho(setB)){
+		elementos = setElementos(setA);
+		n = setTamanho(setA);
+		aux = setB;
+	}
+	else{
+		elementos = setElementos(setB);
+		n = setTamanho(setB);
+		aux = setA;
+	}
+
 	SET *sintese = setCriar(setA->tipo);
-	int *elementos = setElementos(setA);
-	int n = setTamanho(setA);
 	for(int i = 0; i < n; i++){
-		if(setPertence(setB, elementos[i])){
+		if(setPertence(aux, elementos[i])){
 			if(!setInserir(sintese, elementos[i])){
 				printf("erro na insercao durante interseccao!\n");
 				return NULL;
