@@ -278,8 +278,11 @@ RB* rbUnir(RB *sintese, RB *rb){
 RB* rbArrOrdenado( int* elementos, int tamanho){
     RB* sintese = rbCriar();
 
-    auxArrOrdenado(sintese, elementos, 0, tamanho-1);
+    if(sintese != NULL){
+        auxArrOrdenado(sintese, elementos, 0, tamanho-1);
+    }
     return sintese;
+    
 }
 
 void auxArrOrdenado(RB* sintese, int* elementos, int ini, int fim){
