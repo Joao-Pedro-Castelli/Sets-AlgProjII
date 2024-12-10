@@ -1,8 +1,8 @@
 #ifndef _SET_H
 #define _SET_H
 
-	#include "ED1.h" //São as interfaces dos TADs que serão 
-	#include "ED2.h" //utilizados para armazenar os Dados do Set.
+	#include "avl.h" //São as interfaces dos TADs que serão 
+	#include "rb.h" //utilizados para armazenar os Dados do Set.
 			 //i.e, Set é um TAD que usa outros TADs. 
 
 	#define ERRO -1023

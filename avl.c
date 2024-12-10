@@ -1,9 +1,10 @@
+#include <stdio.h>
 #include "avl.h"
 
 typedef struct no{
 	int chave;
-	struct no *filhoEsq;
-	struct no *filhoDir;
+	struct no *fiEsq;
+	struct no *fiDir;
 	int altura;
 	int FB;
 } NO;
@@ -11,19 +12,42 @@ typedef struct no{
 struct avl{
 	NO *raiz;
 	int tamanho;
-}
+};
 
-NO *noCriar(int elemento); //cria um no com malloc e retorna um ponteiro para ele
-bool nosProcurar(NO *raiz, int elemento); //funcao recursiva para procurar o no com a chave == elemento
-NO *nosInserir(NO *raiz, int elemento); //recursiva: cria um no com chave = elemento, coloca no lugar certo e balanceia a AVL
-NO *nosRemover(NO *raiz, int elemento); //recursiva: remove um no com chave == elemento e balanceia a AVl
-NO *nosTrocaMaior(NO *raiz); //pega o no com a maior chave na subarvore esquerda do no a ser removido e retorna este no
-			     //enquanto balanceia a AVL
-void nosApagar(NO *raiz); //recursiva: vai colocando os ponteiros esquerdo e direito como nulo e dando free nos nos.
-NO *nosArrayOrdenado(int *ordenado, int comeco, int fim); //recursiva: cria uma arvore e seus nos partindo de um array ordenado
-							  //mais informacoes em: "sorted array to BST"
-int nosElementos(NO *raiz, int *elementos, int i); //recursiva: coloca as chaves dos nos no array elementos em-ordem.
-int max(int a, int b); //retorna o maior numero entre os dois
+NO *noCriar(int elemento);
+	//cria um no com malloc e retorna um ponteiro para ele.
+bool nosProcurar(NO *raiz, int elemento);
+	//funcao recursiva para procurar o no com a chave == elemento.
+NO *nosInserir(NO *raiz, int elemento);
+	//recursiva: cria um no com chave = elemento, coloca no lugar certo e balanceia a AVL.
+NO *nosRemover(NO *raiz, int elemento);
+	//recursiva: remove um no com chave == elemento e balanceia a AVl.
+NO *nosTrocaMaior(NO *raiz);
+	//pega o no com a maior chave na subarvore esquerda do no a ser removido e retorna este no
+	//enquanto balanceia a AVL.
+NO *rotacaoEsquerda(NO *raiz);
+	//aumenta a altura do fiDir e do fiDir, diminui a altura da raiz.
+NO *rotacaoDireita(NO *raiz);
+	//aumenta a altura do fiEsq, diminui a altura da raiz.
+NO *rotacaoEsqDir(NO *raiz);
+	//diminui a altura da raiz e do fiEsq, aumenta a altura do raiz->fiEsq->fiDir.
+NO *rotacaoDirEsq(NO *raiz);
+	//diminui a altura da raiz e do fiDir, aumenta a altura do raiz->fiDir->fiEsq.
+void nosApagar(NO *raiz);
+	//recursiva: vai colocando os ponteiros esquerdo e direito como nulo e dando free nos nos.
+NO *nosArrayOrdenado(int *ordenado, int comeco, int fim);
+	//recursiva: cria uma arvore e seus nos partindo de um array ordenado
+	//mais informacoes em: "sorted array to BST"
+int nosElementos(NO *raiz, int *elementos, int i);
+	//recursiva: coloca as chaves dos nos no array elementos em-ordem.
+void alturaFbAtualizar(NO *no);
+	//procedimentos para colocar os valores corretos em no->altura e no->FB.
+int calcAltura(NO *no);
+	//se no eh nulo, altura eh -1, senao altura == no->altura.
+NO *noBalancear(NO *raiz);
+	//verifica se o FB eh -2 ou 2 e realiza as rotacoes necessarias.
+int max(int a, int b);
+	//retorna o maior numero entre os dois
 
 
 
@@ -40,8 +64,8 @@ NO *noCriar(int elemento){
 	NO *no = (NO *) malloc(sizeof(NO));
 	if(no != NULL){
 		no->chave = elemento;
-		no->filhoEsq = NULL;
-		no->filhoDir = NULL;
+		no->fiEsq = NULL;
+		no->fiDir = NULL;
 		no->altura = 0;
 		no->FB = 0;
 	}
@@ -64,10 +88,10 @@ bool nosProcurar(NO *raiz, int elemento){
 		return true;
 	}
 	if(chave > elemento){
-		return nosProcurar(raiz->filhoEsq, elemento);
+		return nosProcurar(raiz->fiEsq, elemento);
 	}
 	if(chave < elemento){
-		return nosProcurar(raiz->filhoDir, elemento);
+		return nosProcurar(raiz->fiDir, elemento);
 	}
 	return false;
 }
@@ -89,48 +113,18 @@ NO *nosInserir(NO *raiz, int elemento){
 		return noCriar(elemento);
 	}
 	if(raiz->chave > elemento){
-		raiz->filhoEsq = nosInserir(raiz->filhoEsq, elemento);
+		raiz->fiEsq = nosInserir(raiz->fiEsq, elemento);
 	}
 	else if(raiz->chave < elemento){
-		raiz->filhoDir = nosInserir(raiz->filhoDir, elemento);
+		raiz->fiDir = nosInserir(raiz->fiDir, elemento);
 	}
 	else{
 		return raiz; //se o elemento == chave, ele ja esta na arvore e nao precisa ser inserido.
 	}
 
 
-	int alturaEsq, alturaDir;
-	if(raiz->filhoEsq == NULL){
-		alturaEsq = -1;
-	}
-	else{
-		alturaEsq = raiz->filhoEsq->altura;
-	}
-	if(raiz->filhoDir == NULL){
-		alturaDir = -1;
-	}
-	else{
-		alturaDir = raiz->filhoDir->altura;
-	}
-	raiz->altura = max(alturaEsq, alturaDir) + 1;
-	raiz->FB = alturaEsq - alturaDir;
-
-	if(raiz->FB == -2){
-		if(raiz->filhoDir->FB <= 0){
-			raiz = rotacaoEsq(raiz);
-		}
-		else{
-			raiz = rotacaoDirEsq(raiz);
-		}
-	}
-	else if(raiz->FB == 2){
-		if(raiz->filhoEsq->FB >= 0){
-			raiz = rotacaoDir(raiz);
-		}
-		else{
-			raiz = rotacaoEsqDir(raiz);
-		}
-	}
+	alturaFbAtualizar(raiz);
+	raiz =  noBalancear(raiz);
 
 	return raiz;
 }
@@ -153,144 +147,105 @@ NO *nosRemover(NO *raiz, int elemento){
 	NO *noAux;
 	if(raiz->chave == elemento){
 		noAux = raiz;
-		if(raiz->filhoEsq == NULL){
-			raiz = raiz->filhoDir;
+		if(raiz->fiEsq == NULL){
+			raiz = raiz->fiDir;
 			free(noAux);
 			noAux = NULL;
 		}
-		else if(raiz->filhoDir == NULL){
-			raiz = raiz->filhoEsq;
+		else if(raiz->fiDir == NULL){
+			raiz = raiz->fiEsq;
 			free(noAux);
 			noAux = NULL;
 		}
-		else if(raiz->filhoEsq->filhoDir == NULL){
-			raiz = raiz->filhoEsq;
-			raiz>filhoDir = noAux->filhoDir;
+		else if(raiz->fiEsq->fiDir == NULL){
+			raiz = raiz->fiEsq;
+			raiz->fiDir = noAux->fiDir;
 			free(noAux);
 			noAux = NULL;
 		}
 		else{
-			raiz = nosTrocaMaior(raiz->filhoEsq);
-			int alturaEsq, alturaDir;	
-			if(raiz->filhoEsq->filhoEsq == NULL){
-				alturaEsq = -1;
-			}
-			else{
-				alturaEsq = raiz->filhoEsq->filhoEsq->altura;
-			}
-			if(raiz->filhoEsq->filhoDir == NULL){
-				alturaDir = -1;
-			}
-			else{
-				alturaDir = raiz->filhoEsq->filhoDir->altura;
-			}
-			raiz->filhoEsq->altura = max(alturaEsq, alturaDir) + 1;
-			raiz->filhoEsq->FB = alturaEsq - alturaDir;
-			if(raiz->filhoEsq->FB == -2){
-				if(raiz->filhoEsq->filhoDir->FB <= 0){
-					raiz->filhoEsq = rotacaoEsquerda(raiz->filhoEsq);
-				}
-				else{
-					raiz->filhoEsq = rotacaoDirEsq(raiz->filhoEsq);
-				}
-			}
-			else if(raiz->filhoEsq->FB == 2){
-				if(raiz->filhoEsq->filhoEsq->FB >= 0){
-					raiz->filhoEsq = rotacaoDireita(raiz->filhoEsq);
-				}
-				else{
-					raiz->filhoEsq = rotacaoEsqDir(raiz->filhoEsq);
-				}
-			}
-			raiz->filhoDir = noAux->filhoDir;
-			raiz->filhoEsq = noAux->filhoEsq;
+			raiz = nosTrocaMaior(raiz->fiEsq);
+			alturaFbAtualizar(raiz->fiEsq);
+			raiz->fiEsq =  noBalancear(raiz->fiEsq);
+			raiz->fiDir = noAux->fiDir;
+			raiz->fiEsq = noAux->fiEsq;
 			free(noAux);
 			noAux = NULL;
 		}
 	}
 
 	else if(raiz->chave > elemento){
-		raiz->filhoEsq = nosRemover(raiz->filhoEsq);
+		raiz->fiEsq = nosRemover(raiz->fiEsq, elemento);
 	}
 	else{
-		raiz->filhoDir = nosRemover(raiz->filhoDir);
+		raiz->fiDir = nosRemover(raiz->fiDir, elemento);
 	}
 	
 	if(raiz != NULL){
-		int alturaEsq, alturaDir;
-		if(raiz->filhoEsq == NULL){
-			alturaEsq = -1;
-		}
-		else{
-			alturaEsq = raiz->filhoEsq->altura;
-		}
-		if(raiz->filhoDir == NULL){
-			alturaDir = -1;
-		}
-		else{
-			alturaDir = raiz->filhoDir->altura;
-		}
-		raiz->altura = max(alturaEsq, alturaDir) + 1;
-		raiz->FB = alturaEsq - alturaDir;
-		if(raiz->FB == -2){
-			if(raiz->filhoDir->FB <= 0){
-				raiz->filhoDir = rotacaoEsquerda(raiz);
-			}
-			else{
-				raiz = rotacaoDirEsq(raiz);
-			}
-		}
-		else if(raiz->FB == 2){
-			if(raiz->filhoEsq->FB >= 0){
-				raiz = rotacaoDireita(raiz);
-			}
-			else{
-				raiz = rotacaoEsqDir(raiz);
-			}
-		}
+		alturaFbAtualizar(raiz);
+		raiz = noBalancear(raiz);
 	}
 	return raiz;
 }
 
 NO *nosTrocaMaior(NO *raiz){
-	if(raiz->filhoDir->filhoDir != NULL){
-		NO *subs = nosTrocaMaior(raiz->filhoDir);
-		int alturaEsq, alturaDir;	
-		if(raiz->filhoDir->filhoEsq == NULL){
-			alturaEsq = -1;
-		}
-		else{
-			alturaEsq = raiz->filhoDir->filhoEsq->altura;
-		}
-		if(raiz->filhoDir->filhoDir == NULL){
-			alturaDir = -1;
-		}
-		else{
-			alturaDir = raiz->filhoDir->filhoDir->altura;
-		}
-		raiz->filhoDir->altura = max(alturaEsq, alturaDir) + 1;
-		raiz->filhoDir->FB = alturaEsq - alturaDir;
-		if(raiz->filhoDir->FB == -2){
-			if(raiz->filhoDir->filhoDir->FB <= 0){
-				raiz->filhoDir = rotacaoEsquerda(raiz->filhoDir);
-			}
-			else{
-				raiz->filhoDir = rotacaoDirEsq(raiz->filhoDir);
-			}
-		}
-		else if(raiz->filhoDir->FB == 2){
-			if(raiz->filhoDir->filhoEsq->FB >= 0){
-				raiz->filhoDir = rotacaoDireita(raiz->filhoDir);
-			}
-			else{
-				raiz->filhoDir = rotacaoEsqDir(raiz->filhoDir);
-			}
-		}
+	if(raiz->fiDir->fiDir != NULL){
+		NO *subs = nosTrocaMaior(raiz->fiDir);
+		alturaFbAtualizar(raiz->fiDir);
+		raiz->fiDir = noBalancear(raiz->fiDir);
 		return subs;
 	}
-	NO *aux = raiz->filhoDir;
-	raiz->filhoDir = aux->filhoEsq;
+	NO *aux = raiz->fiDir;
+	raiz->fiDir = aux->fiEsq;
 	return aux;
+}
+
+NO *rotacaoEsquerda(NO *raiz){
+	NO *fi = raiz->fiDir;
+	raiz->fiDir = fi->fiEsq;
+	fi->fiEsq = raiz;
+	alturaFbAtualizar(raiz);
+	alturaFbAtualizar(fi);
+
+	return fi;
+}
+
+NO *rotacaoDireita(NO *raiz){
+	NO *fi = raiz->fiEsq;
+	raiz->fiEsq = fi->fiDir;
+	fi->fiDir = raiz;
+	alturaFbAtualizar(raiz);
+	alturaFbAtualizar(fi);
+
+	return fi;
+}
+
+NO *rotacaoEsqDir(NO *raiz){
+	NO *novaRaiz = raiz->fiEsq->fiDir;
+	NO *fi = raiz->fiEsq;
+	fi->fiDir = novaRaiz->fiEsq;
+	raiz->fiEsq = novaRaiz->fiDir;
+	novaRaiz->fiEsq = fi;
+	novaRaiz->fiDir = raiz;
+
+	alturaFbAtualizar(raiz);
+	alturaFbAtualizar(fi);
+	alturaFbAtualizar(novaRaiz);
+	return novaRaiz;
+}
+
+NO *rotacaoDirEsq(NO *raiz){
+	NO *novaRaiz = raiz->fiDir->fiEsq;
+	NO *fi = raiz->fiDir;
+	fi->fiEsq = novaRaiz->fiDir;
+	raiz->fiDir = novaRaiz->fiEsq;
+	novaRaiz->fiEsq = raiz;
+	novaRaiz->fiDir = fi;
+
+	alturaFbAtualizar(raiz);
+	alturaFbAtualizar(fi);
+	alturaFbAtualizar(novaRaiz);
+	return novaRaiz;
 }
 
 void avlApagar(AVL *arvore){
@@ -306,7 +261,7 @@ void avlApagar(AVL *arvore){
 
 void nosApagar(NO *raiz){
 	if(raiz == NULL){
-		return NULL;
+		return;
 	}
 	nosApagar(raiz->fiEsq);
 	raiz->fiEsq = NULL;
@@ -317,7 +272,7 @@ void nosApagar(NO *raiz){
 }
 
 void avlArrOrdenado(AVL *sintese, int *ordenado, int n){
-	if(sintese = NULL){
+	if(sintese == NULL){
 		return;
 	}
 	if(sintese->raiz != NULL){
@@ -359,7 +314,7 @@ int *avlElementos(AVL *arvore){
 	int *elementos = (int *) malloc(sizeof(int) * arvore->tamanho);
 	int i = 0;
 	nosElementos(arvore->raiz, elementos, i);
-	return;
+	return elementos;
 }
 
 int nosElementos(NO *raiz, int *elementos, int i){
@@ -379,6 +334,39 @@ int avlTamanho(AVL *arvore){
 	return arvore->tamanho;
 }
 
+void alturaFbAtualizar(NO *no){
+	no->altura = max(calcAltura(no->fiEsq), calcAltura(no->fiDir)) + 1;
+	no->FB = calcAltura(no->fiEsq) - calcAltura(no->fiDir);
+}
+
+int calcAltura(NO *no){
+	if(no == NULL){
+		return -1;
+	}
+	else{
+		return no->altura;
+	}
+}
+
+NO *noBalancear(NO *raiz){
+	if(raiz->FB == -2){
+		if(raiz->fiDir->FB <= 0){
+			raiz = rotacaoEsquerda(raiz);
+		}
+		else{
+			raiz = rotacaoDirEsq(raiz);
+		}
+	}
+	else if(raiz->FB == 2){
+		if(raiz->fiEsq->FB >= 0){
+			raiz = rotacaoDireita(raiz);
+		}
+		else{
+			raiz = rotacaoEsqDir(raiz);
+		}
+	}
+	return raiz;
+}
 
 int max(int a, int b){
 	if(b > a){

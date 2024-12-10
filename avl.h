@@ -2,10 +2,12 @@
 #define _AVL_H
 
 
-#include <stdbool.h>
-#include <stdlib.h>
+	#include <stdbool.h>
+	#include <stdlib.h>
 
-typedef struct avl AVL;
+	#define ERRO -1023
+
+	typedef struct avl AVL;
 
 	AVL *avlCriar(void);
 	bool avlPertence(AVL *arvore, int elemento);
