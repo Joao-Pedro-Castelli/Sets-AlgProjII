@@ -271,16 +271,14 @@ void nosApagar(NO *raiz){
 	return;
 }
 
-void avlArrOrdenado(AVL *sintese, int *ordenado, int n){
+AVL *avlArrOrdenado(int *ordenado, int n){
+	AVL *sintese = avlCriar();
 	if(sintese == NULL){
-		return;
-	}
-	if(sintese->raiz != NULL){
-		printf("erro avlArrayOrdenado: sintese nao esta vazio\n");
-		return;
+		printf("erro avlArrayOrdenado: sintese nao pode ser criada\n");
+		return NULL;
 	}
 	sintese->raiz = nosArrayOrdenado(ordenado, 0, n - 1);
-	return;
+	return sintese;
 }
 
 NO *nosArrayOrdenado(int *ordenado, int comeco, int fim){

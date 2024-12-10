@@ -14,7 +14,7 @@
 	bool avlInserir(AVL *arvore, int elemento);
 	bool avlRemover(AVL *arvore, int elemento);
 	void avlApagar(AVL *arvore);
-	void avlArrOrdenado(AVL *sintese, int *ordenado, int n);
+	AVL* avlArrOrdenado(int *ordenado, int n);
 	int *avlElementos(AVL *arvore);
 	int avlTamanho(AVL *arvore);
 

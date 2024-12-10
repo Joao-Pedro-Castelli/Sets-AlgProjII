@@ -20,6 +20,7 @@ SET *setCriar(int tipo){
 	}
 	if(set->arvore == NULL){ //caso a arvore nao foi criada, o tipo indica que ocorreu um erro
 		set->tipo = ERRO;
+	}
 	else{
 		set->tipo = tipo;
 	}
@@ -67,18 +68,18 @@ bool setRemover(SET *set, int elemento){
 }
 
 void setApagar(SET **setptr){
-	if(*set == NULL){
+	if(*setptr == NULL){
 		return;
 	}
-	if((*set)->tipo == 0){
-		avlApagar((*set)->arvore);
+	if((*setptr)->tipo == 0){
+		avlApagar((*setptr)->arvore);
 	}
-	else if((*set)->tipo == 1){
-		rbApagar((*set)->arvore);
+	else if((*setptr)->tipo == 1){
+		rbApagar((*setptr)->arvore);
 	}
-	(*set)->arvore = NULL;
-	free(*set);
-	*set = NULL;
+	(*setptr)->arvore = NULL;
+	free(*setptr);
+	*setptr = NULL;
 }
 
 void setImprimir(SET *set){
@@ -151,10 +152,10 @@ SET *setUniao(SET *setA, SET *setB){
 	int elementosS[numA + numB];
 	int numS = arrOrdenadoUnir(elementosS, elementosA, numA, elementosB, numB);
 	if(sintese->tipo == 0){
-		avlArrOrdenado(sintese, elementosS, numS);
+		sintese->arvore = avlArrOrdenado(elementosS, numS);
 	}
 	else if(sintese->tipo == 1){
-		rbArrOrdenado(sintese, elementosS, numS);
+		sintese->arvore = rbArrOrdenado(elementosS, numS);
 	}
 	else{
 		printf("erro em setUniao, tipo desconhecido.\n");
@@ -170,12 +171,12 @@ SET *setInterseccao(SET *setA, SET *setB){
 	if(setA == NULL || setB == NULL){
 		return NULL;
 	}	
-	SET *sintese = set_criar(setA->tipo);
+	SET *sintese = setCriar(setA->tipo);
 	int *elementos = setElementos(setA);
 	int n = setTamanho(setA);
 	for(int i = 0; i < n; i++){
-		if(setPertence(setB, elementosA[i])){
-			if(!setInserir(sintese, elementosA[i])){
+		if(setPertence(setB, elementos[i])){
+			if(!setInserir(sintese, elementos[i])){
 				printf("erro na insercao durante interseccao!\n");
 				return NULL;
 			}
@@ -203,6 +204,7 @@ int setTamanho(SET *set){
 //numero de elementos no set.
 	if(set->tipo == 0){
 		return avlTamanho(set->arvore);
+	}
 	else if(set->tipo == 1){
 		return rbTamanho(set->arvore);
 	}
