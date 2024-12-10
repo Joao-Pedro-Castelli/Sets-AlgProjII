@@ -28,6 +28,7 @@ void minDir(NO* atual, NO* anterior, NO*raiz);
 NO* noCriar(int elemento);
 void auxUnir(NO* adicionar, NO* sintese);
 NO* auxRemover(NO** raiz, int elemento);
+void auxArrOrdenado(RB* sintese, int* elementos, int ini, int fim);
 
 NO* noCriar(int elemento){
     NO* n = malloc(sizeof(NO));
