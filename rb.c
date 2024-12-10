@@ -276,13 +276,21 @@ RB* rbUnir(RB *sintese, RB *rb){
 
 RB* rbArrOrdenado( int* elementos, int tamanho){
     RB* sintese = rbCriar();
-    rbInserir(sintese, elementos[tamanho/2]);
-    for(int i=1;i<tamanho/2;i++){
-        rbInserir(sintese, elementos[tamanho/2-i]);
-        rbInserir(sintese, elementos[tamanho/2+i]);
-    }
-    rbInserir(sintese, elementos[0]);
+
+    auxArrOrdenado(sintese, elementos, 0, tamanho-1);
     return sintese;
+}
+
+void auxArrOrdenado(RB* sintese, int* elementos, int ini, int fim){
+    if(ini == fim){
+        rbInserir(sintese, elementos[ini]);
+        return;
+    }
+
+    int meio = (ini + fim)/2;
+    rbInserir(sintese, elementos[meio]);
+    auxArrOrdenado(sintese, elementos,0, meio - 1);
+    auxArrOrdenado(sintese, elementos, meio + 1, fim);
 }
 
 void auxUnir(NO* adicionar, NO* sintese){
