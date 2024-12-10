@@ -287,7 +287,6 @@ RB* rbArrOrdenado( int* elementos, int tamanho){
 
 void auxArrOrdenado(RB* sintese, int* elementos, int ini, int fim){
     if(ini == fim){
-        rbInserir(sintese, elementos[ini]);
         return;
     }
 
