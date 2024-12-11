@@ -30,9 +30,16 @@ int main(void){
         int op;
         scanf("%d", &op);
         int elemento;
+
         //Chamada da operação desejada
     switch (op){
-        case 1: scanf("%d", &elemento); setPertence(A,elemento); break;
+        case 1: scanf("%d", &elemento); 
+		if(setPertence(A,elemento)){
+			printf("Pertence.\n");
+		}else{
+			printf("Nao pertence.\n");
+		}
+		; break;
         case 2: SET* uni = setUniao(A,B); setImprimir(uni); break;
         case 3: SET* inter = setInterseccao(A,B); setImprimir(inter); break;
         case 4: scanf("%d",&item); setRemover(A,item); setImprimir(A); break;

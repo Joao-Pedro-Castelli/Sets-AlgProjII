@@ -114,7 +114,7 @@ int arrOrdenadoUnir(int *uniao, int *arrA, int numA, int *arrB, int numB){
 			ptrA++;
 			ptrB++;
 		}
-		if(arrA[ptrA] < arrB[ptrB]){
+		else if(arrA[ptrA] < arrB[ptrB]){
 			uniao[i] = arrA[ptrA];
 			ptrA++;
 		}

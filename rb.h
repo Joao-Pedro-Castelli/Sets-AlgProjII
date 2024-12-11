@@ -13,6 +13,7 @@ typedef struct rb RB;
 	bool rbRemover(RB *rb, int elemento);
 	void rbApagar(RB **rb);
     RB* rbUnir(RB *sintese, RB *rb);
+	RB *rbArrOrdenado(int *ordenado, int n);
 	int *rbElementos(RB *rb);
 	int rbTamanho(RB *rb);
 	RB* rbArrOrdenado( int* elementos, int tamanho);

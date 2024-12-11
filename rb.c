@@ -40,12 +40,12 @@ NO* rotEsq(NO* raiz);// Rotaciona o nó para a esquerda quando a árvore precisa
 void auxApagar(NO** raiz);//Auxilia no momento de apagar a árvore binária red-black
 int auxElementos(NO* raiz, int* vetor, int pos);//Função que auxilia na criação de um vetor com os elementos da árvore binária red-black.
 NO* minDir(NO* raiz);//Encontra o menor valor que está a direita de um nó que queremos remover
-NO* noCriar(int elemento);//Cria um nó que será inserido na árvore binária
+NO* noCriarRb(int elemento);//Cria um nó que será inserido na árvore binária
 void auxUnir(NO* adicionar, NO* sintese);//Função que une duas árvores binárias
 NO* auxRemover(NO* raiz, int elemento);//Função que auxilia na remoção de um dado elemento que está presente na árvore binária red-black
 void auxArrOrdenado(RB* sintese, int* elementos, int ini, int fim);//Função que transforma um array ordenado na árvore binária red-black
 
-NO* noCriar(int elemento){
+NO* noCriarRb(int elemento){
     NO* n = malloc(sizeof(NO));
     if(n!=NULL){
         n->cor = 1;
@@ -158,7 +158,7 @@ int Vermelho(NO* raiz){
 desbalanceada após a inserção */
 NO* auxInserir(NO* raiz, int elemento){
    if(raiz == NULL){
-        return noCriar(elemento);
+        return noCriarRb(elemento);
    }
     
     if(raiz->dado > elemento){
@@ -330,7 +330,10 @@ void auxApagar(NO**raiz){
 }
 /*Função responsável por criar e retornar um array de inteiros que estão presentes na árvore que será passada como argumento.*/
 int *rbElementos(RB* rb){
-   int* vetor = malloc(sizeof(int)*rb->tamanho);
+    if(rb == NULL){
+        return NULL;
+    }	
+    int* vetor = malloc(sizeof(int)*rb->tamanho);
 
     if( vetor == NULL){
         return vetor;
