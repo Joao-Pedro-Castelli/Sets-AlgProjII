@@ -278,6 +278,7 @@ AVL *avlArrOrdenado(int *ordenado, int n){
 		return NULL;
 	}
 	sintese->raiz = nosArrayOrdenado(ordenado, 0, n - 1);
+	sintese->tamanho = n;
 	return sintese;
 }
 
@@ -290,21 +291,8 @@ NO *nosArrayOrdenado(int *ordenado, int comeco, int fim){
 	NO *raiz = noCriar(ordenado[meio]);
 	raiz->fiEsq = nosArrayOrdenado(ordenado, comeco, meio - 1);
 	raiz->fiDir = nosArrayOrdenado(ordenado, meio + 1, fim);
-
-	int altura1, altura2;
-	if(raiz->fiEsq == NULL){
-		altura1 = -1;
-	}
-	else{
-		altura1 = raiz->fiEsq->altura;
-	}
-	if(raiz->fiDir == NULL){
-		altura2 = -1;
-	}
-	else{
-		altura2 = raiz->fiDir->altura;
-	}
-	raiz->FB = altura1 - altura2;
+	
+	alturaFbAtualizar(raiz);
 	return raiz;
 }
 
@@ -319,9 +307,9 @@ int nosElementos(NO *raiz, int *elementos, int i){
 	if(raiz == NULL){
 		return i;
 	}
+	i = nosElementos(raiz->fiEsq, elementos, i);
 	elementos[i] = raiz->chave;
 	i++;
-	i = nosElementos(raiz->fiEsq, elementos, i);
 	i = nosElementos(raiz->fiDir, elementos, i);
 	return i;
 }

@@ -35,7 +35,7 @@ int main(void){
         case 1: scanf("%d", &elemento); setPertence(A,elemento); break;
         case 2: SET* uni = setUniao(A,B); setImprimir(uni); break;
         case 3: SET* inter = setInterseccao(A,B); setImprimir(inter); break;
-        case 4: scanf("%d",&item); setRemocao(A,item); setImprimir(A); break;
+        case 4: scanf("%d",&item); setRemover(A,item); setImprimir(A); break;
     }
     
 

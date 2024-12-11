@@ -149,9 +149,14 @@ SET *setUniao(SET *setA, SET *setB){
 	int numA = setTamanho(setA);
 	int *elementosB = setElementos(setB);
 	int numB = setTamanho(setB);
+
 	SET *sintese = setCriar(setA->tipo);
 	int elementosS[numA + numB];
 	int numS = arrOrdenadoUnir(elementosS, elementosA, numA, elementosB, numB);
+	free(elementosA);
+	elementosA = NULL;
+	free(elementosB);
+	elementosB = NULL;
 	if(sintese->tipo == 0){
 		sintese->arvore = avlArrOrdenado(elementosS, numS);
 	}
@@ -162,6 +167,7 @@ SET *setUniao(SET *setA, SET *setB){
 		printf("erro em setUniao, tipo desconhecido.\n");
 		return NULL;
 	}
+
 
 	return sintese;
 }
