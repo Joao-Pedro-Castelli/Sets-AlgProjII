@@ -63,7 +63,7 @@ NO* rotDir(NO* raiz){
 
     raiz->cor =1;
 
-    return raiz;
+    return aux;
 }
 
 NO* rotEsq(NO* raiz){
@@ -72,8 +72,9 @@ NO* rotEsq(NO* raiz){
     raiz->dir = aux->esq;
     aux->esq = raiz;
 
-    raiz->cor = 1;
+   
     aux->cor = raiz->cor;
+     raiz->cor = 1;
 
     return aux;
 }
@@ -382,9 +383,6 @@ void printar(NO* rb){
     if(rb == NULL){
         return;
     }
-    if(rb == NULL){
-        return;
-    }
     printf("%d ",rb->dado);
     printar(rb->esq);
     printar(rb->dir);
@@ -392,8 +390,9 @@ void printar(NO* rb){
 
 int main(){
     RB* rb = rbCriar();
+    RB * rb2 = rbCriar();
 
-    if(rb== NULL){
+    if(rb== NULL || rb2 == NULL){
         printf("MERDA");
         exit(1);
     }
@@ -402,16 +401,21 @@ int main(){
     rbInserir(rb,3);
     rbInserir(rb,4);
     rbInserir(rb,12);
-    rbInserir(rb,5);
-    rbInserir(rb,17);
-    rbInserir(rb,13);
-    rbInserir(rb,6);
+    rbInserir(rb, 32);
+    rbInserir(rb,14);
 
+    rbInserir(rb2, 5);
+    rbInserir(rb2,6);
+    rbInserir(rb2,13);
+    rbInserir(rb2,43);
     
+    printar(rb2->raiz);
+    printf("\n");    
     printar(rb->raiz);
-
+    printf("\n");
+    RB* uniao = rbUnir(rb,rb2);
     
-   
+   printar(uniao->raiz);
     
     return 0;
 }
