@@ -15,5 +15,6 @@ typedef struct rb RB;
     RB* rbUnir(RB *sintese, RB *rb);
 	int *rbElementos(RB *rb);
 	int rbTamanho(RB *rb);
+	RB* rbArrOrdenado( int* elementos, int tamanho);
 
 #endif
