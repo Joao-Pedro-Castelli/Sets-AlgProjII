@@ -54,7 +54,7 @@ int max(int a, int b);
 AVL *avlCriar(){
 	AVL *arvore = (AVL *) malloc(sizeof(AVL));
 	if(arvore != NULL){
-		arvore->tamanho = -1;
+		arvore->tamanho = 0;
 		arvore->raiz = NULL;
 	}
 	return arvore;
@@ -165,12 +165,12 @@ NO *nosRemover(NO *raiz, int elemento){
 		}
 		else{
 			raiz = nosTrocaMaior(raiz->fiEsq);
-			alturaFbAtualizar(raiz->fiEsq);
-			raiz->fiEsq =  noBalancear(raiz->fiEsq);
 			raiz->fiDir = noAux->fiDir;
 			raiz->fiEsq = noAux->fiEsq;
 			free(noAux);
 			noAux = NULL;
+			alturaFbAtualizar(raiz->fiEsq);
+			raiz->fiEsq =  noBalancear(raiz->fiEsq);
 		}
 	}
 
@@ -319,8 +319,9 @@ int nosElementos(NO *raiz, int *elementos, int i){
 	if(raiz == NULL){
 		return i;
 	}
-	i = nosElementos(raiz->fiEsq, elementos, i);
 	elementos[i] = raiz->chave;
+	i++;
+	i = nosElementos(raiz->fiEsq, elementos, i);
 	i = nosElementos(raiz->fiDir, elementos, i);
 	return i;
 }
