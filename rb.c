@@ -1,6 +1,6 @@
 /*Trabalho de Algoritmo e estrutura de dados.
 Docente: Rudinei Gularte
-Discentes: Matheus Muzza Pires Ferreira - 15479468, João Pedro Monteiro Castelli
+Discentes: Matheus Muzza Pires Ferreira - 15479468, João Pedro Monteiro Castelli-15463450
 
     O arquivo em questão fornece um dos TAD`S que serão utilizados no programa principal. A implementação proposta nesse arquivo 
     é deu uma árvore binária que segue a estrutura de uma left-Leaning Red-Black Tree. Foram criadas certas funções auxiliares a
@@ -360,6 +360,8 @@ int rbTamanho(RB *rb){
 //retorna a árvore síntese que irá agora ter seus elementos e os elementos da árvore rb, que serão passados para a função.
 RB* rbUnir(RB *sintese, RB *rb){
     auxUnir(rb->raiz,sintese->raiz);
+    sintese->tamanho+= rb->tamanho;
+    
     return sintese;
 }
 //Função que cria uma árvore LLRB tomando como base os elementos de um vetor que será passado para a função
