@@ -183,15 +183,15 @@ NO* auxRemover(NO* raiz, int elemento){
 
     if(raiz->dado == elemento){
         if(raiz->esq == NULL || raiz->dir == NULL){
-            NO* p = raiz;
+            NO* aux = raiz;
             if(raiz->esq == NULL){
                 raiz = raiz->dir;
             }
             else{
                 raiz = raiz->esq;
             }
-            free(p);
-            p = NULL;
+            free(aux);
+            aux = NULL;
         }
         else{
             raiz = propagaDir(raiz);
@@ -416,6 +416,19 @@ int main(){
     RB* uniao = rbUnir(rb,rb2);
     
    printar(uniao->raiz);
+   printf("\n");
+
+   rbRemover(uniao,12);
+   printar(uniao->raiz);
+    printf("\n");
+    int * vet = rbElementos(uniao);
+
+    for(int i = 0;i<uniao->tamanho;i++){
+        printf("%d ", vet[i]);
+    }
+
+   rbApagar(&rb);
+   rbApagar(&rb2);
     
     return 0;
 }

@@ -5,7 +5,6 @@
 int main(void){
 
     int tad;
-    printf("Indique qual tipo de dado Abstrato deseja usar:\n  Digite 0 para : Árvore flamenguista:\n Digite 1 para : Árvore AVL:\n");
     //Leitura do tipo de dado desejado
     scanf("%d", &tad);
     //Criação dos conjuntos passando o     
@@ -28,23 +27,15 @@ int main(void){
     }
 
     //Leitura da operação desejada
-    int op = 0;
-    while(op !=EOF){
-        printf("Escolha uma das operações abaixo:\n");
-        printf("Digite 1 para: set-imprimir de A e B\n ");
-        printf("Digite 2 para: set-união de A e B\n ");
-        printf("Digite 3 para: set-interseccao de A e B\n ");
-        printf("Digite 4 para: set-pertence de A e B\n ");
+        int op;
         scanf("%d", &op);
+        int elemento;
         //Chamada da operação desejada
-        switch (op)
-        {
-        case 1: setImprimir(A); printf("\n"); setImprimir(B); break;
-        case 2: setUniao(A,B); break;
-        case 3: setInterseccao(A,B); break;
-        case 4: scanf("%d",&item); setPertence(A,item); scanf("%d",&item); setPertence(B,intem); break;
-        }
-
+    switch (op){
+        case 1: scanf("%d", &elemento); setPertence(A,elemento); break;
+        case 2: SET* uni = setUniao(A,B); setImprimir(uni); break;
+        case 3: SET* inter = setInterseccao(A,B); setImprimir(inter); break;
+        case 4: scanf("%d",&item); setRemocao(A,item); setImprimir(A); break;
     }
     
 
